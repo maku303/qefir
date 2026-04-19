@@ -13,7 +13,10 @@ struct MidiEvent {
     uint8_t status;
     uint8_t data1;
     uint8_t data2;
+    //sample time in frame
     uint64_t sampleTime;
+    //DSP frame time stamp
+    uint64_t dspFrameTime;
 };
 
 class MidiQueue {

@@ -14,7 +14,7 @@
 #include "midiIO.h"
 
 extern std::atomic<bool> audioRunning;
-std::atomic<uint64_t> dspSampleTime;
+std::atomic<uint64_t> dspFrameTime;
 
 void sigint_handler(int) { audioRunning = false; }
 

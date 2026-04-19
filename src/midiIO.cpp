@@ -1,7 +1,7 @@
 #include "midiIO.h"
 #include "workerThread.h"
 
-extern std::atomic<uint64_t> dspSampleTime;
+extern std::atomic<uint64_t> dspFrameTime;
 extern std::chrono::time_point<std::chrono::high_resolution_clock> dspStart;
 extern std::atomic<bool> dspRunning;
 
@@ -103,9 +103,10 @@ void MidiIO::run()
                     ev.data1 = msg[1];
                     ev.data2 = msg[2];
 
+                    ev.dspFrameTime = dspFrameTime.load();
                     auto now = std::chrono::high_resolution_clock::now();
                     double seconds = std::chrono::duration<double>(now - dspStart).count();
-                    ev.sampleTime = static_cast<uint64_t>(seconds * qefParams.sampleRate);
+                    ev.sampleTime = static_cast<uint64_t>(seconds * qefParams.sampleRate) - ev.dspFrameTime;
 
                     midiQ.push(ev);
                     std::cout << "MIDI: "

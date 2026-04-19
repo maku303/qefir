@@ -17,6 +17,8 @@ constexpr int PRIORITY_AUDIO_IO = 50;
 constexpr int PRIORITY_MIDI_IO = 15;
 constexpr int PRIORITY_DSP = 40;
 
+constexpr size_t NUM_OF_VOICES = 16;
+
 struct qefirParams
 {
     size_t sampleRate;

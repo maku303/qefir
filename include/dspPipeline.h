@@ -3,6 +3,7 @@
 #include "midiIO.h"
 #include "workerThread.h"
 
+
 extern std::atomic<bool> audioRunning;
 
 class DspManager : public WorkerThread {
