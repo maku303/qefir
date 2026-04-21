@@ -12,6 +12,7 @@ WorkerThread::~WorkerThread()
 
 void WorkerThread::start()
 {
+    stop();
     running_ = true;
     worker_ = std::thread(&WorkerThread::threadEntry, this);
 }

@@ -15,7 +15,6 @@ private:
     void run() override; // pętla wątku
 
     std::thread worker;
-    //std::atomic<bool> running{false};
     RingBuffer& audioBuff;
     MidiQueue& midiQ;
     const qefirParams qefParams;

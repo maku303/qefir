@@ -15,7 +15,7 @@
 // ========================== Ring Buffer ==========================
 class RingBuffer {
 public:
-    RingBuffer(size_t blocks, size_t blockSize);
+    RingBuffer(size_t blocks, size_t blockSize, std::atomic<bool>& run);
 
     // producer calls
     void push(const std::vector<int32_t>& blk);
@@ -32,9 +32,31 @@ private:
     size_t filled;
     std::mutex mtx;
     std::condition_variable cv;
+    std::atomic<bool>& running;
 };
 
+class AudioCapture : public WorkerThread
+{
+public:
+    AudioCapture(RingBuffer& buff, const uint8_t coreId, const int priority, const size_t numOfChannels, const size_t sampleRate);
+    ~AudioCapture();
+    bool isRunning() const
+    {
+        return running_;
+    }
+    void stopRunning()
+    {
+        running_ = false;
+        buffRec.notifyAll();
+        stop();
+    }
 
+private:
+    void run() override; // pętla wątku
+    RingBuffer& buffRec;
+    const size_t numOfChannels;
+    const size_t sampleRate;
+};
 class AudioIO : public WorkerThread
 {
 public:
@@ -47,7 +69,9 @@ private:
 
     std::thread worker;
     //std::atomic<bool> running{false};
-    RingBuffer& audioBuff;
     const qefirParams& qefParams;
+    RingBuffer& audioBuff;
+    RingBuffer captureBuff;
     snd_pcm_t *pcm;
+    AudioCapture rec;
 };
